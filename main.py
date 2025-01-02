@@ -4,7 +4,7 @@ Docstring
 import csv
 from pathlib import Path
 import configparser
-import JustWatch
+from justwatch import JustWatch
 
 
 def open_watchlist():
@@ -67,7 +67,7 @@ def main():
             for movie in watchlist:
                 name = movie["Name"]
 
-                result.append(name)
+                result.append([name])
 
             write_to_csv(result, "result.csv")
 
