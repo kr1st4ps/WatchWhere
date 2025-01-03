@@ -7,14 +7,11 @@ with open("data/output.json", "r", encoding="utf-8") as f:
     movies = json.load(f)
 
 # Streamlit App
-st.title("🎬 All Movies Viewer")
+st.title("🎬 Movie Service Finder")
 
 # Sorting Options
 sort_by = st.sidebar.selectbox("Sort movies by", ["Title", "Year", "Runtime"])
-
 sort_order = st.sidebar.radio("Sort order", ["Ascending", "Descending"])
-
-# Sorting Logic
 reverse_order = sort_order == "Descending"
 
 if sort_by == "Title":
@@ -38,7 +35,6 @@ for movie in movies:
             "<div style='text-align: center;'><img src='https://via.placeholder.com/200x300?text=No+Poster' width='200'></div>",
             unsafe_allow_html=True,
         )
-        
     st.subheader(movie["title"])
     st.write(f"**Year:** {movie['year']}")
     st.write(f"**Runtime:** {movie['runtime']} min")
@@ -53,18 +49,13 @@ for movie in movies:
         for offer_type in offer_types:
             st.write(f"### {offer_type.capitalize()}")
 
-            # Display Offers in columns (with Service, Quality, Price, Link)
             for offer in movie["offers"]:
                 cols = st.columns(
                     5
-                )  # 4 columns per row (Service, Quality, Price, Link)
-                # Service column
+                )
                 cols[0].markdown(f"**Service**: {offer['service']}")
-                # Quality column
                 cols[1].markdown(f"**Quality**: {offer['quality']}")
-                # Price column
                 cols[2].markdown(f"**Price**: {offer['price']} {offer['currency']}")
-                # Link column with the image and URL
                 cols[3].markdown(f"**Link**: [{offer['service']}]({offer['url']})")
                 icon_url = offer.get("service_icon_url", "")
                 if icon_url:
