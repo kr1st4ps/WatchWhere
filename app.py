@@ -49,25 +49,30 @@ for movie in movies:
         for offer_type in offer_types:
             st.write(f"### {offer_type.capitalize()}")
 
+
+            cols = st.columns(4)
+            cols[0].markdown("**Service**")
+            cols[1].markdown("**Link**")
+            cols[2].markdown("**Quality**")
+            cols[3].markdown("**Price**")
+
             for offer in movie["offers"]:
-                cols = st.columns(
-                    5
-                )
-                cols[0].markdown(f"**Service**: {offer['service']}")
-                cols[1].markdown(f"**Quality**: {offer['quality']}")
-                cols[2].markdown(f"**Price**: {offer['price']} {offer['currency']}")
-                cols[3].markdown(f"**Link**: [{offer['service']}]({offer['url']})")
+                cols = st.columns(4)
                 icon_url = offer.get("service_icon_url", "")
+                cols[0].markdown(f"{offer['service']}")
                 if icon_url:
-                    cols[4].markdown(
-                        f"<div style='text-align: center;'><img src='{icon_url}' width='20'></div>",
+                    cols[1].markdown(
+                        f"<div><a href='{offer['url']}' target='_blank'><img src='{offer['service_icon_url']}' width='30'></a></div>",
                         unsafe_allow_html=True,
                     )
                 else:
-                    cols[4].markdown(
-                        "<div style='text-align: center;'><img src='https://via.placeholder.com/200x300?text=No+Icon' width='20'></div>",
+                    cols[1].markdown(
+                        "<div><a href='{offer['url']}' target='_blank'><img src='https://via.placeholder.com/200x300?text=No+Icon' width='30'></div>",
                         unsafe_allow_html=True,
                     )
+                quality = "4K" if offer['quality'] == "_4K" else offer['quality']
+                cols[2].markdown(f"{quality}")
+                cols[3].markdown(f"{offer['price']} {offer['currency']}")
 
     else:
         st.write("No offers available.")
