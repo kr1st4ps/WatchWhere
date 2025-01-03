@@ -8,6 +8,13 @@ with open("data/output.json", "r", encoding="utf-8") as f:
 # Streamlit App
 st.title("🎬 Movie Service Finder")
 
+# Search Box
+search_query = st.sidebar.text_input("Search for a movie")
+
+# Filtering movies based on the search query
+if search_query:
+    movies = [movie for movie in movies if search_query.lower() in movie["title"].lower()]
+
 # Sorting Options
 sort_by = st.sidebar.selectbox("Sort movies by", ["Title", "Year", "Runtime"])
 sort_order = st.sidebar.radio("Sort order", ["Ascending", "Descending"])
