@@ -87,6 +87,8 @@ for movie in movies[start_idx:end_idx]:
 
             # Display offers in columns
             for offer in movie["offers"]:
+                if offer["type"] != offer_type:
+                    continue
                 cols = st.columns(4)
                 icon_url = offer.get("service_icon_url", "")
                 cols[0].markdown(f"{offer['service']}")
