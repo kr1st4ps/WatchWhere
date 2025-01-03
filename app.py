@@ -1,8 +1,7 @@
 import streamlit as st
 import json
 
-IMDB_LOGO_URL = "https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg"
-RT_LOGO_URL = "https://www.rottentomatoes.com/assets/pizza-pie/images/rtlogo.9b892cff3fd.png"
+from utils.constants import GENRE_MAP, IMDB_LOGO_URL, RT_LOGO_URL
 
 # Load JSON data
 with open("data/output.json", "r", encoding="utf-8") as f:
@@ -82,7 +81,8 @@ for movie in movies[start_idx:end_idx]:
     st.subheader(movie["title"])
     st.write(f"**Year:** {movie['year']}")
     st.write(f"**Runtime:** {movie['runtime']} min")
-    st.write(f"**Genres:** {', '.join(movie['genres'])}")
+    mapped_genres = [GENRE_MAP.get(genre_code, genre_code) for genre_code in movie['genres']]
+    st.write(f"**Genres:** {', '.join(mapped_genres)}")
     imdb_rating = ratings.get(movie['imdb_id'], {}).get('imdb_rating')
     st.markdown(
         f"""
