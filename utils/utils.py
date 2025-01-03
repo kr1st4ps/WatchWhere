@@ -5,6 +5,8 @@ Other simple functions.
 import csv
 import json
 
+import requests
+
 
 def open_watchlist():
     """
@@ -46,3 +48,43 @@ def read_minimal_result():
                 for res in valid_results:
                     print(f"\t{res}")
                 print()
+
+
+def get_ratings():
+    """
+    Collects ratings for all movies.
+    """
+    
+    file_path = "data/output.json"
+    api_key = "aec888a0"
+    movie_ratings = {}
+
+    with open(file_path, "r", encoding="utf-8") as file:
+        data = json.load(file)
+        data_cnt = len(data)
+        for (idx, movie) in enumerate(data):
+            imdb_id = movie["imdb_id"]
+            url = f"http://www.omdbapi.com/?i={imdb_id}&apikey={api_key}"
+            response = requests.get(url)
+            resp_json = response.json()
+
+            imdb_rating = resp_json.get("imdbRating", None)
+            if imdb_rating:
+                try:
+                    imdb_rating = float(imdb_rating)
+                except:
+                    imdb_rating = None
+            rt_rating = None
+            for obj in resp_json.get("Ratings", []):
+                if obj["Source"] == "Rotten Tomatoes":
+                    rt_rating = int(obj["Value"][:-1])
+
+            movie_ratings[imdb_id] = {
+                "imdb_rating": imdb_rating,
+                "rt_rating": rt_rating,
+            }
+
+            print(f"{idx} / {data_cnt}")
+
+        with open("data/ratings.json", "w", encoding="utf-8") as file:
+            json.dump(movie_ratings, file, indent=4, ensure_ascii=False)
