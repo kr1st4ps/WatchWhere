@@ -12,6 +12,7 @@ def check_watchlist(watchlist):
     """
     Checks and saves all services for movies in the watchlist.
     """
+    print("TODO: fix incorrect years on JustWatch")
 
     full_json = []
     minimal_json = []
@@ -19,21 +20,31 @@ def check_watchlist(watchlist):
     for idx, movie in enumerate(watchlist):
         minimial_offers = []
         name = movie["Name"]
+        year = movie["Year"]
 
-        results = search(name, "LV", "en", 1, True)[0]
+        jw_search = search(name, "LV", "en", 5, True)
+        jw_movie = None
+        for entry in jw_search:
+            if entry.title == name and str(entry.release_year) == year:
+                jw_movie = entry
+                break
+        if not jw_movie:
+            print(f"Skipping {name} ({year})")
+            continue
+
         media_object = MediaObject(
-            results.title,
-            results.release_year,
-            results.runtime_minutes,
-            results.url,
-            results.object_type,
-            results.short_description,
-            results.genres,
-            results.imdb_id,
-            results.poster,
+            jw_movie.title,
+            jw_movie.release_year,
+            jw_movie.runtime_minutes,
+            jw_movie.url,
+            jw_movie.object_type,
+            jw_movie.short_description,
+            jw_movie.genres,
+            jw_movie.imdb_id,
+            jw_movie.poster,
             [],
         )
-        offers = offers_for_countries(results.entry_id, {"LV"})["LV"]
+        offers = offers_for_countries(jw_movie.entry_id, {"LV"})["LV"]
         for offer in offers:
             monetization_type = (
                 "STREAM"
@@ -59,7 +70,7 @@ def check_watchlist(watchlist):
 
         print(f"{idx} / {movies_cnt}")
 
-    with open("output.json", "w", encoding="utf-8") as file:
+    with open("data/output.json", "w", encoding="utf-8") as file:
         json.dump(full_json, file, indent=4, ensure_ascii=False)
-    with open("minimal_output.json", "w", encoding="utf-8") as file:
+    with open("data/minimal_output.json", "w", encoding="utf-8") as file:
         json.dump(minimal_json, file, indent=4, ensure_ascii=False)

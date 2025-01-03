@@ -11,7 +11,7 @@ def open_watchlist():
     Opens watchlist
     """
 
-    file_path = "watchlist.csv"
+    file_path = "data/watchlist.csv"
 
     watchlist = []
 
